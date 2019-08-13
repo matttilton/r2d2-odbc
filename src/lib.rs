@@ -51,7 +51,6 @@ impl fmt::Display for ODBCError {
 
 impl From<DiagnosticRecord> for ODBCError {
     fn from(err: DiagnosticRecord) -> Self {
-        println!("OLOLO {}", err);
         ODBCError(Box::new(err))
     }
 }
@@ -120,8 +119,14 @@ impl r2d2::ManageConnection for ODBCConnectionManager {
     }
 
     fn is_valid(&self, _conn: &mut Self::Connection) -> std::result::Result<(), Self::Error> {
-        //TODO
-        Ok(())
+        match Statement::with_parent(_conn.raw()).unwrap().exec_direct("select 1") {
+            Ok(_x) => {
+                Ok(())
+            },
+            Err(e) => {
+                Err(Self::Error::from(e))
+            }
+        }
     }
 
     fn has_broken(&self, _conn: &mut Self::Connection) -> bool {
