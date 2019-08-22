@@ -31,7 +31,7 @@ unsafe impl Sync for ODBCEnv {}
 unsafe impl Send for ODBCEnv {}
 
 #[derive(Debug)]
-pub struct ODBCError(Box<Error>);
+pub struct ODBCError(Box< dyn Error>);
 
 lazy_static! {
     static ref ENV: ODBCEnv = ODBCEnv(create_environment_v3().unwrap());
